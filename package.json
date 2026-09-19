@@ -1,0 +1,21 @@
+{
+    "name": "at-bot",
+    "version": "1.1.0",
+    "type": "module",
+    "scripts": {
+        "start": "node index.js",
+        "dev": "nodemon index.js"
+    },
+    "dependencies": {
+        "@napi-rs/canvas": "^1.0.8",
+        "axios": "^1.7.9",
+        "better-sqlite3": "^12.11.1",
+        "crypto-js": "^4.2.0",
+        "discord.js": "^14.26.5",
+        "dotenv": "^16.4.5",
+        "express": "^4.21.2"
+    },
+    "devDependencies": {
+        "nodemon": "^3.1.0"
+    }
+}

@@ -1,0 +1,12 @@
+node_modules/
+.env
+*.db
+*.db-shm
+*.db-wal
+data/
+*.sqlite
+*.sqlite-shm
+*.sqlite-wal
+cookies.txt
+*-player-script.js
+skipboth_out.txt

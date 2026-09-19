@@ -1,0 +1,12 @@
+{
+    "1408088125594402816": {
+        "status": false,
+        "text": "Welcome {user}!",
+        "channelId": "1495458026579038419",
+        "layout": "server_left",
+        "sOpacity": 100,
+        "uOpacity": 100,
+        "topText": "WELCOME TO OUR SERVER",
+        "bottomPrefix": ""
+    }
+}
