@@ -13,6 +13,7 @@ import { join, dirname }                       from 'path';
 import { fileURLToPath }                       from 'url';
 import { execSync }                            from 'child_process';
 import { TOKEN, OWNER_IDS, GUILD_ID, MEDIA_ENABLED }          from './config.js';
+import express from 'express';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
@@ -136,7 +137,7 @@ async function loadCogs() {
 
             // الفحص الذكي لتجاهل الملفات التي لا تحتوي على دالة setup
             if (typeof cog.setup !== 'function') {
-                continue; 
+                continue;
             }
 
             await cog.setup(client);
@@ -186,7 +187,7 @@ async function syncCommands(retries = 3) {
         if (GUILD_ID) {
             // 🛑 تنظيف الأوامر العالمية لمنع التكرار (Global Cleanup)
             await rest.put(Routes.applicationCommands(client.user.id), { body: [] });
-            
+
             // ⚡ رفع الأوامر للسيرفر المحدد فقط
             await rest.put(
                 Routes.applicationGuildCommands(client.user.id, GUILD_ID),
@@ -234,7 +235,7 @@ client.once(Events.ClientReady, async (c) => {
 
     c.user.setPresence({
         activities: [{
-            name: 'Online ', 
+            name: 'Online ',
             type: ActivityType.Watching,
         }],
         status: 'online',
@@ -315,6 +316,22 @@ client.commands.set('check', {
 // ════════════════════════════════════════════════
 //  🚀 تشغيل البوت
 // ════════════════════════════════════════════════
+
+// ── 🌐 HTTP Keep-Alive (يمنع سكون Render المجاني بعد 15 دقيقة) ──
+const app  = express();
+const PORT = Number(process.env.PORT) || 3000;
+
+app.get('/', (req, res) => res.send('OK'));
+
+try {
+    const server = app.listen(PORT, () => {
+        console.log(`🌐 HTTP Keep-Alive يعمل على المنفذ ${PORT}`);
+    });
+    server.on('error', (err) => console.log(`⚠️  HTTP Server: ${err.message}`));
+} catch (err) {
+    console.log(`⚠️  تعذر تشغيل HTTP Server: ${err.message}`);
+}
+
 try {
     await client.login(TOKEN);
 } catch (err) {
