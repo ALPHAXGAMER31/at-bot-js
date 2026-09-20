@@ -1,5 +1,3 @@
-// cogs/example.js
-
 import { SlashCommandBuilder } from 'discord.js';
 
 export async function setup(client) {

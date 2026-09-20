@@ -19,17 +19,17 @@ const db = new Database(DB_PATH);
 db.exec(`CREATE TABLE IF NOT EXISTS frozen_roles (user_id TEXT, guild_id TEXT, roles TEXT, PRIMARY KEY (user_id, guild_id))`);
 
 // 📝 اكتب اسم الرتبة هنا بالضبط كما هي في السيرفر
-const UNVERIFIED_ROLE_NAME = 'Unverified'; 
+const UNVERIFIED_ROLE_NAME = 'Unverified';
 
 export async function setup(client) {
     console.log(`🚀 [Sync System] Monitoring role: "${UNVERIFIED_ROLE_NAME}"`);
 
     client.on(Events.GuildMemberUpdate, async (oldMember, newMember) => {
         const guild = newMember.guild;
-        
+
         // البحث عن الرتبة بالاسم
         const unverifiedRole = guild.roles.cache.find(r => r.name === UNVERIFIED_ROLE_NAME);
-        
+
         if (!unverifiedRole) {
             console.error(`❌ [Critical] لم أجد رتبة باسم "${UNVERIFIED_ROLE_NAME}" في السيرفر!`);
             return;
@@ -44,7 +44,7 @@ export async function setup(client) {
         // --- حالة التجميد (أخذ الرتبة) ---
         if (!hadUnverified && hasUnverified) {
             console.log(`🔍 [Freeze] ${newMember.user.tag} حصل على رتبة ${UNVERIFIED_ROLE_NAME}`);
-            
+
             const rolesToFreeze = newMember.roles.cache
                 .filter(r => r.id !== guild.id && r.id !== unverifiedRole.id && !r.managed)
                 .map(r => r.id);
@@ -66,7 +66,7 @@ export async function setup(client) {
         // --- حالة الاستعادة (إزالة الرتبة) ---
         if (hadUnverified && !hasUnverified) {
             console.log(`🔍 [Restore] أُزيلت رتبة ${UNVERIFIED_ROLE_NAME} من ${newMember.user.tag}`);
-            
+
             const data = db.prepare('SELECT roles FROM frozen_roles WHERE user_id = ? AND guild_id = ?')
                            .get(newMember.id, guild.id);
 

@@ -135,7 +135,7 @@ const importCmd = {
             }
 
             const isStateJson = name === 'welcome_settings.json';
-            if (!isStateJson && !/\.db(-wal|-shm)?$|\.sqlite(-wal|-shm)?$/.test(name)) {
+            if (!isStateJson && !/\.db(\.sqlite)?(-wal|-shm)?$|\.sqlite(-wal|-shm)?$/.test(name)) {
                 return interaction.editReply('❌ ملف غير معروف (مسموح: .db / .sqlite / welcome_settings.json)');
             }
 
