@@ -232,6 +232,7 @@ client.once(Events.ClientReady, async (c) => {
 
     await loadCogs();
     await syncCommands();
+    startKeepAlive();
 
     c.user.setPresence({
         activities: [{
@@ -318,18 +319,28 @@ client.commands.set('check', {
 // ════════════════════════════════════════════════
 
 // ── 🌐 HTTP Keep-Alive (يمنع سكون Render المجاني بعد 15 دقيقة) ──
-const app  = express();
+// لا يستمع فوراً — كوج at_community يشغل OAuth Server على نفس المنفذ،
+// فنستمع بعد تحميل الكوجز فقط، وإذا كان المنفذ مشغولاً نتجاهلها بهدوء.
+const app = express();
 const PORT = Number(process.env.PORT) || 3000;
 
 app.get('/', (req, res) => res.send('OK'));
 
-try {
-    const server = app.listen(PORT, () => {
-        console.log(`🌐 HTTP Keep-Alive يعمل على المنفذ ${PORT}`);
-    });
-    server.on('error', (err) => console.log(`⚠️  HTTP Server: ${err.message}`));
-} catch (err) {
-    console.log(`⚠️  تعذر تشغيل HTTP Server: ${err.message}`);
+function startKeepAlive() {
+    try {
+        const server = app.listen(PORT, () => {
+            console.log(`🌐 HTTP Keep-Alive يعمل على المنفذ ${PORT}`);
+        });
+        server.on('error', (err) => {
+            if (err.code === 'EADDRINUSE') {
+                console.log('ℹ️  المنفذ مشغول (OAuth Server شغال) — Keep-Alive مغطى بالفعل');
+            } else {
+                console.log(`⚠️  HTTP Server: ${err.message}`);
+            }
+        });
+    } catch (err) {
+        console.log(`⚠️  تعذر تشغيل HTTP Server: ${err.message}`);
+    }
 }
 
 try {
