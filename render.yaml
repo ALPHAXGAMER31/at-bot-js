@@ -1,0 +1,19 @@
+services:
+  - type: web
+    name: at-bot
+    runtime: node
+    plan: free
+    startCommand: node index.js
+    healthCheckPath: /
+    autoDeploy: true
+    envVars:
+      - key: DISCORD_TOKEN
+        sync: false
+      - key: OWNER_IDS
+        sync: false
+      - key: GUILD_ID
+        sync: false
+      - key: MEDIA_ENABLED
+        sync: false
+      - key: DATA_DIR
+        sync: false
